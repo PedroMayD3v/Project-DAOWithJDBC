@@ -32,35 +32,51 @@ public class SellerDaoJDBC implements SellerDao {
 		try {
 			PreparedStatement st = conn.prepareStatement("INSERT INTO seller\r\n"
 					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) \r\n" + "VALUES \r\n" + "(?, ?, ?, ?, ?)",
-					Statement.RETURN_GENERATED_KEYS); //Ao final da query retornar o valor dos ids gerados
+					Statement.RETURN_GENERATED_KEYS); // Ao final da query retornar o valor dos ids gerados
 			st.setString(1, obj.getName());
 			st.setString(2, obj.getEmail());
 			st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
 			st.setDouble(4, obj.getBaseSalary());
 			st.setInt(5, obj.getDepartment().getId());
 
-			int rowsAffected = st.executeUpdate(); //Semrpe lembrr que o update afeta as linhas e tem que chamar um int
+			int rowsAffected = st.executeUpdate(); // Semrpe lembrr que o update afeta as linhas e tem que chamar um int
 
 			if (rowsAffected > 0) {
-				rs = st.getGeneratedKeys(); 
-				if (rs.next()) { //Se houver linha captamos o id com o rs.getInt
+				rs = st.getGeneratedKeys();
+				if (rs.next()) { // Se houver linha captamos o id com o rs.getInt
 					int id = rs.getInt(1);
 					obj.setId(id);
+					DB.closeStatement(st);
 				}
 			} else {
 				throw new DbException("Unexpected error, no rows affected!");
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
 		}
 
 	}
 
 	@Override
-	public void update(Seller bbj) {
-		// TODO Auto-generated method stub
+	public void update(Seller obj) {
+		ResultSet rs = null;
+		try {
+			PreparedStatement st = conn.prepareStatement("UPDATE seller \r\n"
+					+ "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? \r\n" + "WHERE Id = ");
+			st.setString(1, obj.getName());
+			st.setString(2, obj.getEmail());
+			st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+			st.setDouble(4, obj.getBaseSalary());
+			st.setInt(5, obj.getDepartment().getId());
+			st.setInt(6, obj.getId());
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+		}
 
 	}
 
