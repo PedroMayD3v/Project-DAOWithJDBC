@@ -2,6 +2,7 @@ package application;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import model.dao.DaoFactory;
 import model.dao.SellerDao;
@@ -16,6 +17,8 @@ public class Program {
 		 * de software Utilizado para separar a lógica de acesso a dados do restante da
 		 * aplicação.
 		 */
+		
+		Scanner sc = new Scanner(System.in);
 
 		System.out.println("===== TESTE 1 =====");
 		// SellerDao pode instanciar daofactory por que o daofactory os implementa de
@@ -47,6 +50,15 @@ public class Program {
 		seller.setName("Martha Wayne");
 		sellerDao.update(seller);
 		System.out.println("Updated Completed");
+	
+		
+		System.out.println("=====TESTE 6======");
+	    System.out.println("Ented id for delete test:");
+	    Integer id = sc.nextInt();
+	    sellerDao.deleteById(id);
+	    System.out.println("Delete complete");
+	
+	
 	}
 
 }
